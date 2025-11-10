@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Demo mode flag - set to false when you have real Stripe keys
-const DEMO_MODE = !process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_your_stripe_secret_key_here';
+// Always use demo mode unless explicitly configured
+const DEMO_MODE = true; // Set to false only when you have real Stripe keys
 
-let stripe;
-if (!DEMO_MODE) {
-  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-}
+// Stripe is optional - only load if configured
+let stripe = null;
 
 // Create payment intent
 router.post('/create-payment-intent', async (req, res) => {

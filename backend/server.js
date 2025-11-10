@@ -49,9 +49,10 @@ app.listen(PORT, () => {
   console.log('========================================');
   console.log(`📍 URL: http://localhost:${PORT}`);
   console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🎭 Payment Mode: ${process.env.STRIPE_SECRET_KEY && process.env.STRIPE_SECRET_KEY !== 'sk_test_your_stripe_secret_key_here' ? 'Stripe (Real)' : 'Demo Mode'}`);
+  console.log(`🎭 Payment Mode: Demo Mode (No setup needed!)`);
   console.log('========================================');
   console.log('\n✨ Ready to accept payments!');
-  console.log('👉 Open your browser and navigate to the URL above');
+  console.log('👉 Open browser: http://localhost:${PORT}');
+  console.log('💳 Payment accepts any card number!');
   console.log('\n');
 });

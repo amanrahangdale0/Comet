@@ -1,9 +1,11 @@
 # Dependencies
 node_modules/
-package-lock.json
 
-# Environment variables
+# Environment variables (optional - not needed for demo mode)
 .env
+
+# Lock files (let npm generate fresh)
+package-lock.json
 
 # Logs
 logs
