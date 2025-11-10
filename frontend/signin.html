@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Sign In - Comet Store</title>
+</head>
+<body>
+    <nav id="nav">
+        <div class="navTop">
+            <div class="navItem">
+                <a href="index.html"><img src="./img/kk.png" alt=""></a>
+            </div>
+            <div class="navItem">
+                <div class="search">
+                    <input type="text" placeholder="Search..." class="searchInput">
+                    <img src="./img/search.png" width="20" height="20" alt="" class="searchIcon">
+                </div>
+            </div>
+            <div class="navItem">
+                <span class="limitedOffer">Limited Offer!</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to continue shopping</p>
+            
+            <form id="signinForm" class="auth-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" class="auth-input" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="auth-input" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="auth-button">Sign In</button>
+                
+                <p class="auth-footer">
+                    Don't have an account? <a href="#" class="auth-link" id="signupLink">Sign Up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footerLeft">
+            <div class="footerMenu">
+                <h1 class="fMenuTitle">About Us</h1>
+                <ul class="fList">
+                    <li class="fListItem">Company</li>
+                    <li class="fListItem">Contact</li>
+                    <li class="fListItem">Careers</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footerRight">
+            <div class="footerRightMenu">
+                <span class="copyright">@Krish Dev. All rights reserved. 2025.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                // Store user session
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('isLoggedIn', 'true');
+                // Redirect to home
+                window.location.href = 'index.html';
+            }
+        });
+
+        document.getElementById('signupLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Sign up feature - For demo, just use any email/password to sign in!');
+        });
+    </script>
+</body>
+</html>

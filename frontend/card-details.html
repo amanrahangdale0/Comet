@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Payment - Comet Store</title>
+</head>
+<body>
+    <nav id="nav">
+        <div class="navTop">
+            <div class="navItem">
+                <a href="index.html"><img src="./img/kk.png" alt=""></a>
+            </div>
+            <div class="navItem">
+                <h3 style="color: white; margin: 0;">Secure Checkout</h3>
+            </div>
+            <div class="navItem">
+                <span class="limitedOffer">Limited Offer!</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="checkout-container">
+        <div class="checkout-box">
+            <h1 class="checkout-title">Payment Details</h1>
+            <p class="checkout-subtitle">Enter your card information</p>
+            
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span id="productName">Product</span>
+                    <span id="productPrice">₹0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="totalPrice">₹0</span>
+                </div>
+            </div>
+
+            <form id="cardForm" class="checkout-form">
+                <div class="card-icons-display">
+                    <img src="./img/visa.png" width="50" alt="Visa">
+                    <img src="./img/master.png" width="50" alt="Mastercard">
+                </div>
+
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" id="cardNumber" class="checkout-input" 
+                           placeholder="1234 5678 9012 3456" 
+                           maxlength="19" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry Date</label>
+                        <input type="text" id="expiryDate" class="checkout-input" 
+                               placeholder="MM/YY" 
+                               maxlength="5" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="cvv" class="checkout-input" 
+                               placeholder="123" 
+                               maxlength="3" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" id="cardName" class="checkout-input" 
+                           placeholder="John Doe" required>
+                </div>
+                
+                <button type="submit" class="checkout-button" id="payButton">
+                    <span id="buttonText">Complete Payment</span>
+                </button>
+                
+                <p class="secure-note">
+                    🔒 Your payment information is secure and encrypted
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get order data from localStorage
+        const orderData = JSON.parse(localStorage.getItem('pendingOrder') || '{}');
+        
+        if (orderData.productName) {
+            document.getElementById('productName').textContent = orderData.productName;
+            document.getElementById('productPrice').textContent = '₹' + orderData.price.toLocaleString('en-IN');
+            document.getElementById('totalPrice').textContent = '₹' + orderData.price.toLocaleString('en-IN');
+        }
+
+        // Card number formatting
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // CVV only numbers
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Form submission
+        document.getElementById('cardForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiryDate = document.getElementById('expiryDate').value;
+            const cvv = document.getElementById('cvv').value;
+            const cardName = document.getElementById('cardName').value;
+            
+            // Basic validation
+            if (!cardNumber || !expiryDate || !cvv || !cardName) {
+                alert('Please fill all card details');
+                return;
+            }
+            
+            if (cardNumber.replace(/\s/g, '').length < 13) {
+                alert('Please enter a valid card number');
+                return;
+            }
+            
+            if (cvv.length < 3) {
+                alert('Please enter a valid CVV');
+                return;
+            }
+            
+            // Show processing
+            const payButton = document.getElementById('payButton');
+            const buttonText = document.getElementById('buttonText');
+            payButton.disabled = true;
+            buttonText.textContent = 'Processing...';
+            
+            try {
+                // Send to backend
+                const response = await fetch('/api/payment/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        items: [{
+                            name: orderData.productName,
+                            description: `Size: ${orderData.size}`,
+                            price: orderData.price,
+                            quantity: 1
+                        }],
+                        customerInfo: orderData.customerInfo,
+                        cardDetails: {
+                            lastFour: cardNumber.slice(-4),
+                            cardName: cardName
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.url) {
+                    // Clear pending order
+                    localStorage.removeItem('pendingOrder');
+                    // Redirect to success
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.message || 'Payment failed');
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Payment processing failed. Please try again.');
+                payButton.disabled = false;
+                buttonText.textContent = 'Complete Payment';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Payment Successful - Comet Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: whitesmoke;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #111;
+            color: white;
+            padding: 20px 50px;
+        }
+
+        .navTop {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-wrapper {
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+        }
+
+        .success-container {
+            background: white;
+            border-radius: 10px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .success-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 5px 30px 2px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .success-icon::before {
+            content: "✓";
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .order-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .order-info p {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .order-info strong {
+            color: #667eea;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #369e62;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-home:hover {
+            background: #2d8350;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(54, 158, 98, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="navTop">
+            <h2 style="margin: 0;">Comet Store</h2>
+        </div>
+    </nav>
+    
+    <div class="success-wrapper">
+        <div class="success-container">
+        <div class="success-icon"></div>
+        <h1>Payment Successful!</h1>
+        <p>Thank you for your purchase. Your order has been confirmed and will be processed shortly.</p>
+        
+        <div class="order-info" id="orderInfo">
+            <p><strong>Order ID:</strong> <span id="orderId">Loading...</span></p>
+            <p><strong>Amount Paid:</strong> <span id="amount">₹0</span></p>
+            <p><strong>Order Status:</strong> <span style="color: #4caf50; font-weight: bold;">Confirmed ✓</span></p>
+            <p><strong>Payment Method:</strong> <span id="paymentMethod">Demo Payment Gateway</span></p>
+            <p style="margin-top: 15px; font-size: 14px;">You will receive a confirmation email with your order details shortly.</p>
+        </div>
+
+        <a href="/" class="btn-home">Continue Shopping</a>
+        </div>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        const amount = urlParams.get('amount');
+        const isDemo = urlParams.get('demo');
+
+        // Update page with order details
+        if (orderId) {
+            document.getElementById('orderId').textContent = orderId;
+        }
+        if (amount) {
+            const formatter = new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 0
+            });
+            document.getElementById('amount').textContent = formatter.format(amount);
+        }
+        if (isDemo === 'true') {
+            document.getElementById('paymentMethod').textContent = 'Demo Payment Gateway (Test Mode)';
+        }
+    </script>
+</body>
+</html>
