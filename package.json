@@ -18,7 +18,7 @@
   },
   "optionalDependencies": {
     "stripe": "^14.7.0"
-  }
+  },
   "devDependencies": {
     "nodemon": "^3.0.2"
   }
